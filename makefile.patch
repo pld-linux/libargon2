@@ -24,18 +24,14 @@
  	SRC += src/opt.c
  endif
  
-@@ -87,8 +87,10 @@
+@@ -87,5 +87,6 @@
  endif
  
  LIB_SH := lib$(LIB_NAME).$(LIB_EXT)
 +LIB_SH_VERSION := $(LIB_SH).0
  LIB_ST := lib$(LIB_NAME).a
  LIBRARIES = $(LIB_SH) $(LIB_ST)
-+INSTALL_LIBRARIES = $(LIBRARIES) $(LIB_SH_VERSION)
- HEADERS = include/argon2.h
- 
- INSTALL = install
-@@ -105,7 +107,7 @@
+@@ -105,7 +106,7 @@
  
  .PHONY: clean dist format $(GENKAT) all install
  
@@ -44,15 +40,10 @@
  libs: $(LIBRARIES)
  
  $(RUN):	        $(SRC) $(SRC_RUN)
-@@ -154,8 +156,10 @@
- 
- install: $(RUN) libs
-+	mv $(LIB_SH) $(LIB_SH_VERSION)
-+	ln -sf $(LIB_SH_VERSION) $(LIB_SH)
- 	$(INSTALL) -d $(INST_INCLUDE)
- 	$(INSTALL) $(HEADERS) $(INST_INCLUDE)
- 	$(INSTALL) -d $(INST_LIBRARY)
--	$(INSTALL) $(LIBRARIES) $(INST_LIBRARY)
-+	$(INSTALL) $(INSTALL_LIBRARIES) $(INST_LIBRARY)
+@@ -160,2 +161,6 @@
  	$(INSTALL) -d $(INST_BINARY)
  	$(INSTALL) $(RUN) $(INST_BINARY)
++	# rename library to match SONAME
++	mv $(INST_LIBRARY)/$(LIB_SH) $(INST_LIBRARY)/$(LIB_SH_VERSION)
++	# keep symlink for development
++	ln -sf $(LIB_SH_VERSION) $(INST_LIBRARY)/$(LIB_SH)
