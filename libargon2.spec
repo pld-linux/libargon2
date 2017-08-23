@@ -65,6 +65,9 @@ CFLAGS="%{rpmcflags}" \
 %install
 rm -rf $RPM_BUILD_ROOT
 %{__make} install \
+	INSTALL="install -p" \
+	PREFIX=%{_prefix} \
+	LIBRARY_REL=%{_lib} \
 	DESTDIR=$RPM_BUILD_ROOT
 
 %clean
@@ -77,7 +80,7 @@ rm -rf $RPM_BUILD_ROOT
 %defattr(644,root,root,755)
 %doc README.md CHANGELOG.md LICENSE
 %attr(755,root,root) %{_bindir}/argon2
-%{_prefix}/lib/libargon2.so
+%attr(755,root,root) %{_libdir}/libargon2.so
 
 %files devel
 %defattr(644,root,root,755)
@@ -86,5 +89,5 @@ rm -rf $RPM_BUILD_ROOT
 %if %{with static_libs}
 %files static
 %defattr(644,root,root,755)
-%{_prefix}/lib/libargon2.a
+%{_libdir}/libargon2.a
 %endif
