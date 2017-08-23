@@ -80,11 +80,12 @@ rm -rf $RPM_BUILD_ROOT
 %defattr(644,root,root,755)
 %doc README.md CHANGELOG.md LICENSE
 %attr(755,root,root) %{_bindir}/argon2
-%attr(755,root,root) %{_libdir}/libargon2.so
+%attr(755,root,root) %{_libdir}/libargon2.so.0
 
 %files devel
 %defattr(644,root,root,755)
 %{_includedir}/argon2.h
+%attr(755,root,root) %{_libdir}/libargon2.so
 
 %if %{with static_libs}
 %files static
