@@ -11,6 +11,7 @@ License:	Apache-2.0 CC0-1.0
 Group:		Libraries
 Source0:	https://github.com/P-H-C/phc-winner-argon2/archive/%{version}/%{name}-%{version}.tar.gz
 # Source0-md5:	bd3476cb8eac9d521a4e0e04d653f5a8
+Patch0:		makefile.patch
 URL:		https://github.com/P-H-C/phc-winner-argon2
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
@@ -54,16 +55,10 @@ Statyczna biblioteka %{name}.
 
 %prep
 %setup -q -n phc-winner-argon2-%{version}
-
-%if %{without static_libs}
-sed -i -e 's/LIBRARIES = \$(LIB_SH) \$(LIB_ST)/LIBRARIES = \$(LIB_SH)/' Makefile
-%endif
-sed -i -e 's/-O3 //' Makefile
-sed -i -e 's/-g //' Makefile
-sed -i -e "s/-march=\$(OPTTARGET) /%{rpmcflags} /" Makefile
-sed -i -e 's/CFLAGS += -march=\$(OPTTARGET)//' Makefile
+%patch0 -p1
 
 %build
+CFLAGS="%{rpmcflags}" \
 %{__make} \
 	CC="%{__cc}"
 

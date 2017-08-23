@@ -1,0 +1,26 @@
+--- phc-winner-argon2-20161029/Makefile	2016-10-29 12:24:03.000000000 +0300
++++ phc-winner-argon2-20161029/Makefile	2017-08-23 08:59:46.258100103 +0300
+@@ -27,12 +27,12 @@
+ SRC_GENKAT = src/genkat.c
+ OBJ = $(SRC:.c=.o)
+ 
+-CFLAGS += -std=c89 -pthread -O3 -Wall -g -Iinclude -Isrc
++CFLAGS += -std=c89 -pthread -Wall -Iinclude -Isrc
+ CI_CFLAGS := $(CFLAGS) -Werror=declaration-after-statement -D_FORTIFY_SOURCE=2 \
+ 				-Wextra -Wno-type-limits -Werror -coverage -DTEST_LARGE_RAM
+ 
+ OPTTARGET ?= native
+-OPTTEST := $(shell $(CC) -Iinclude -Isrc -march=$(OPTTARGET) src/opt.c -c \
++OPTTEST := $(shell $(CC) -Iinclude -Isrc src/opt.c -c \
+ 			-o /dev/null 2>/dev/null; echo $$?)
+ # Detect compatible platform
+ ifneq ($(OPTTEST), 0)
+@@ -40,7 +40,7 @@
+ 	SRC += src/ref.c
+ else
+ $(info Building with optimizations for $(OPTTARGET))
+-	CFLAGS += -march=$(OPTTARGET)
++	
+ 	SRC += src/opt.c
+ endif
+ 
