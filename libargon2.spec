@@ -5,12 +5,12 @@
 
 Summary:	The password hash Argon2, winner of PHC
 Name:		libargon2
-Version:	20161029
+Version:	20171227
 Release:	1
 License:	Apache-2.0 CC0-1.0
 Group:		Libraries
 Source0:	https://github.com/P-H-C/phc-winner-argon2/archive/%{version}/%{name}-%{version}.tar.gz
-# Source0-md5:	bd3476cb8eac9d521a4e0e04d653f5a8
+# Source0-md5:	7d0a85aa3fa02a5962ff751a6e2078c8
 Patch0:		makefile.patch
 URL:		https://github.com/P-H-C/phc-winner-argon2
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
@@ -64,11 +64,18 @@ CFLAGS="%{rpmcflags}" \
 
 %install
 rm -rf $RPM_BUILD_ROOT
+
+install -d $RPM_BUILD_ROOT%{_pkgconfigdir}
+
 %{__make} install \
 	INSTALL="install -p" \
 	PREFIX=%{_prefix} \
 	LIBRARY_REL=%{_lib} \
 	DESTDIR=$RPM_BUILD_ROOT
+
+install libargon2.pc $RPM_BUILD_ROOT%{_pkgconfigdir}
+sed -i -e 's#libdir=.*#libdir=${prefix}/%{_lib}#g' $RPM_BUILD_ROOT%{_pkgconfigdir}/libargon2.pc
+sed -i -e 's#@UPSTREAM_VER@#%{version}#g' $RPM_BUILD_ROOT%{_pkgconfigdir}/libargon2.pc
 
 %clean
 rm -rf $RPM_BUILD_ROOT
@@ -80,12 +87,14 @@ rm -rf $RPM_BUILD_ROOT
 %defattr(644,root,root,755)
 %doc README.md CHANGELOG.md LICENSE
 %attr(755,root,root) %{_bindir}/argon2
-%attr(755,root,root) %{_libdir}/libargon2.so.0
+%attr(755,root,root) %ghost %{_libdir}/libargon2.so.1
+%attr(755,root,root) %{_libdir}/libargon2.so.1.*
 
 %files devel
 %defattr(644,root,root,755)
 %{_includedir}/argon2.h
 %attr(755,root,root) %{_libdir}/libargon2.so
+%{_pkgconfigdir}/libargon2.pc
 
 %if %{with static_libs}
 %files static

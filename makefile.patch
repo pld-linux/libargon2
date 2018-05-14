@@ -1,12 +1,16 @@
---- phc-winner-argon2-20161029/Makefile	2016-10-29 12:24:03.000000000 +0300
-+++ phc-winner-argon2-20161029/Makefile	2017-08-23 08:59:46.258100103 +0300
-@@ -27,12 +27,12 @@
+diff -urN phc-winner-argon2-20171227.org/Makefile phc-winner-argon2-20171227/Makefile
+--- phc-winner-argon2-20171227.org/Makefile	2017-12-27 20:56:31.000000000 +0100
++++ phc-winner-argon2-20171227/Makefile	2018-05-14 20:24:50.018634693 +0200
+@@ -30,7 +30,7 @@
  SRC_GENKAT = src/genkat.c
  OBJ = $(SRC:.c=.o)
  
--CFLAGS += -std=c89 -pthread -O3 -Wall -g -Iinclude -Isrc
-+CFLAGS += -std=c89 -pthread -Wall -Iinclude -Isrc
- CI_CFLAGS := $(CFLAGS) -Werror=declaration-after-statement -D_FORTIFY_SOURCE=2 \
+-CFLAGS += -std=c89 -O3 -Wall -g -Iinclude -Isrc
++CFLAGS += -std=c89 -Wall -g -Iinclude -Isrc
+ 
+ ifeq ($(NO_THREADS), 1)
+ CFLAGS += -DARGON2_NO_THREADS
+@@ -42,7 +42,7 @@
  				-Wextra -Wno-type-limits -Werror -coverage -DTEST_LARGE_RAM
  
  OPTTARGET ?= native
@@ -15,7 +19,7 @@
  			-o /dev/null 2>/dev/null; echo $$?)
  # Detect compatible platform
  ifneq ($(OPTTEST), 0)
-@@ -40,7 +40,7 @@
+@@ -50,7 +50,7 @@
  	SRC += src/ref.c
  else
  $(info Building with optimizations for $(OPTTARGET))
@@ -24,26 +28,22 @@
  	SRC += src/opt.c
  endif
  
-@@ -87,5 +87,6 @@
+@@ -99,6 +99,7 @@
  endif
  
  LIB_SH := lib$(LIB_NAME).$(LIB_EXT)
 +LIB_SH_VERSION := $(LIB_SH).0
  LIB_ST := lib$(LIB_NAME).a
- LIBRARIES = $(LIB_SH) $(LIB_ST)
-@@ -105,7 +106,7 @@
  
- .PHONY: clean dist format $(GENKAT) all install
- 
--all: clean $(RUN) libs 
-+all: $(RUN) libs 
- libs: $(LIBRARIES)
- 
- $(RUN):	        $(SRC) $(SRC_RUN)
-@@ -160,2 +161,6 @@
+ ifdef LINKED_LIB_EXT
+@@ -180,6 +181,10 @@
+ endif
  	$(INSTALL) -d $(INST_BINARY)
  	$(INSTALL) $(RUN) $(INST_BINARY)
 +	# rename library to match SONAME
 +	mv $(INST_LIBRARY)/$(LIB_SH) $(INST_LIBRARY)/$(LIB_SH_VERSION)
 +	# keep symlink for development
 +	ln -sf $(LIB_SH_VERSION) $(INST_LIBRARY)/$(LIB_SH)
+ 
+ uninstall:
+ 	cd $(INST_INCLUDE) && rm -f $(notdir $(HEADERS))
