@@ -1,13 +1,13 @@
 #
 # Conditional build:
-%bcond_without	apidocs		# do not build and package API docs
-%bcond_without	static_libs	# don't build static libraries
+%bcond_without	static_libs	# static library
 
 Summary:	The password hash Argon2, winner of PHC
+Summary(pl.UTF-8):	Skrót haseł Argon2 - zwycięzca PHC
 Name:		libargon2
 Version:	20171227
 Release:	1
-License:	Apache-2.0 CC0-1.0
+License:	Apache v2.0, CC0 v1.0
 Group:		Libraries
 Source0:	https://github.com/P-H-C/phc-winner-argon2/archive/%{version}/%{name}-%{version}.tar.gz
 # Source0-md5:	7d0a85aa3fa02a5962ff751a6e2078c8
@@ -29,29 +29,44 @@ effective use of multiple computing units, while still providing
 defense against tradeoff attacks (by exploiting the cache and memory
 organization of the recent processors).
 
+%description -l pl.UTF-8
+Ta biblioteka jest referencyjną implementacją w C funkcji skrotu haseł
+Argon2, która wygrała Password Hashing Competition (PHC).
+
+Argon2 to funkcja skrótu podsumowująca stan techniki w projektowaniu
+złożonych pamięciowo funkcji skrótu, które mogą być używane do
+haszowania haseł do uwierzytelniania, tworzenia kluczy lub innych
+zastosowań.
+
+Funkcja jest zaprojektowana w prosty sposób, nakierowany na najwięszy
+współczynnik wypełniania pamięci i efektywne użycie wielu jednostek
+obliczeniowych, nadal zapewniając ochronę przeciw atakom kompromisowym
+(wykorzystując pamięć podręczną i organizację pamięci współczesnych
+procesorów).
+
 %package devel
-Summary:	Header files for %{name} library
-Summary(pl.UTF-8):	Pliki nagłówkowe biblioteki %{name}
+Summary:	Header files for libargon2 library
+Summary(pl.UTF-8):	Pliki nagłówkowe biblioteki libargon2
 Group:		Development/Libraries
 Requires:	%{name} = %{version}-%{release}
 
 %description devel
-Header files for %{name} library.
+Header files for libargon2 library.
 
 %description devel -l pl.UTF-8
-Pliki nagłówkowe biblioteki %{name}.
+Pliki nagłówkowe biblioteki libargon2.
 
 %package static
-Summary:	Static %{name} library
-Summary(pl.UTF-8):	Statyczna biblioteka %{name}
+Summary:	Static libargon2 library
+Summary(pl.UTF-8):	Statyczna biblioteka libargon2
 Group:		Development/Libraries
 Requires:	%{name}-devel = %{version}-%{release}
 
 %description static
-Static %{name} library.
+Static libargon2 library.
 
 %description static -l pl.UTF-8
-Statyczna biblioteka %{name}.
+Statyczna biblioteka libargon2.
 
 %prep
 %setup -q -n phc-winner-argon2-%{version}
@@ -60,22 +75,22 @@ Statyczna biblioteka %{name}.
 %build
 CFLAGS="%{rpmcflags}" \
 %{__make} \
-	CC="%{__cc}"
+	CC="%{__cc}" \
+	%{!?with_static_libs:LIBRARIES='$(LIB_SH)'}
 
 %install
 rm -rf $RPM_BUILD_ROOT
-
 install -d $RPM_BUILD_ROOT%{_pkgconfigdir}
 
 %{__make} install \
 	INSTALL="install -p" \
 	PREFIX=%{_prefix} \
+	%{!?with_static_libs:LIBRARIES='$(LIB_SH)'} \
 	LIBRARY_REL=%{_lib} \
 	DESTDIR=$RPM_BUILD_ROOT
 
-install libargon2.pc $RPM_BUILD_ROOT%{_pkgconfigdir}
-sed -i -e 's#libdir=.*#libdir=${prefix}/%{_lib}#g' $RPM_BUILD_ROOT%{_pkgconfigdir}/libargon2.pc
-sed -i -e 's#@UPSTREAM_VER@#%{version}#g' $RPM_BUILD_ROOT%{_pkgconfigdir}/libargon2.pc
+%{__sed} libargon2.pc -e 's#libdir=.*#libdir=${prefix}/%{_lib}#g' \
+	-e 's#@UPSTREAM_VER@#%{version}#g' >$RPM_BUILD_ROOT%{_pkgconfigdir}/libargon2.pc
 
 %clean
 rm -rf $RPM_BUILD_ROOT
