@@ -44,6 +44,6 @@ diff -urN phc-winner-argon2-20171227.org/Makefile phc-winner-argon2-20171227/Mak
 +	mv $(INST_LIBRARY)/$(LIB_SH) $(INST_LIBRARY)/$(LIB_SH_VERSION)
 +	# keep symlink for development
 +	ln -sf $(LIB_SH_VERSION) $(INST_LIBRARY)/$(LIB_SH)
+ 	$(INSTALL) -d $(INST_PKGCONFIG)
+ 	$(INSTALL) -m 0644 $(PC_NAME) $(INST_PKGCONFIG)
  
- uninstall:
- 	cd $(INST_INCLUDE) && rm -f $(notdir $(HEADERS))

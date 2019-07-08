@@ -5,12 +5,12 @@
 Summary:	The password hash Argon2, winner of PHC
 Summary(pl.UTF-8):	Skrót haseł Argon2 - zwycięzca PHC
 Name:		libargon2
-Version:	20171227
+Version:	20190702
 Release:	1
 License:	Apache v2.0, CC0 v1.0
 Group:		Libraries
 Source0:	https://github.com/P-H-C/phc-winner-argon2/archive/%{version}/%{name}-%{version}.tar.gz
-# Source0-md5:	7d0a85aa3fa02a5962ff751a6e2078c8
+# Source0-md5:	0f234cc21ac6cebfe373da6afa70bb1d
 Patch0:		makefile.patch
 URL:		https://github.com/P-H-C/phc-winner-argon2
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
@@ -76,6 +76,9 @@ Statyczna biblioteka libargon2.
 CFLAGS="%{rpmcflags}" \
 %{__make} \
 	CC="%{__cc}" \
+	ARGON2_VERSION=%{version} \
+	PREFIX=%{_prefix} \
+	LIBRARY_REL=%{_lib} \
 	%{!?with_static_libs:LIBRARIES='$(LIB_SH)'}
 
 %install
@@ -88,9 +91,6 @@ install -d $RPM_BUILD_ROOT%{_pkgconfigdir}
 	%{!?with_static_libs:LIBRARIES='$(LIB_SH)'} \
 	LIBRARY_REL=%{_lib} \
 	DESTDIR=$RPM_BUILD_ROOT
-
-%{__sed} libargon2.pc -e 's#libdir=.*#libdir=${prefix}/%{_lib}#g' \
-	-e 's#@UPSTREAM_VER@#%{version}#g' >$RPM_BUILD_ROOT%{_pkgconfigdir}/libargon2.pc
 
 %clean
 rm -rf $RPM_BUILD_ROOT
