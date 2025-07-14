@@ -70,7 +70,7 @@ Statyczna biblioteka libargon2.
 
 %prep
 %setup -q -n phc-winner-argon2-%{version}
-%patch0 -p1
+%patch -P0 -p1
 
 %build
 CFLAGS="%{rpmcflags}" \
