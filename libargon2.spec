@@ -6,7 +6,7 @@ Summary:	The password hash Argon2, winner of PHC
 Summary(pl.UTF-8):	Skrót haseł Argon2 - zwycięzca PHC
 Name:		libargon2
 Version:	20190702
-Release:	1
+Release:	2
 License:	Apache v2.0, CC0 v1.0
 Group:		Libraries
 Source0:	https://github.com/P-H-C/phc-winner-argon2/archive/%{version}/%{name}-%{version}.tar.gz
